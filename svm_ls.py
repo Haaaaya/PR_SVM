@@ -34,9 +34,6 @@ alpha_optimal = result.x
 w = np.sum(alpha_optimal[:, None] * y[:, None] * X, axis=0)
 support_vector_idx = np.where(alpha_optimal > 1e-5)[0][0]  # Find the first support vector
 b = y[support_vector_idx] - np.dot(w, X[support_vector_idx])
-# Output psi^0
-print("w:", w)
-print("b:", b)
 
 # Plot the data points
 plt.figure(figsize=(8, 6))
@@ -54,6 +51,14 @@ Z = w[0] * xx + w[1] * yy + b
 
 # Plot the decision boundary
 plt.contour(xx, yy, Z, levels=[0], colors='green', linestyles='--')
+
+plt.text(
+    0.05, 0.95, 
+    f"$\mathbf{{w}}$: [{w[0]:.3f}, {w[1]:.3f}]\n$b$: {b:.3f}",
+    transform=plt.gca().transAxes,
+    fontsize=12,
+    bbox=dict(facecolor='white', alpha=0.8, edgecolor='black')
+)
 
 # Labels and legend
 plt.xlabel('Feature 1')

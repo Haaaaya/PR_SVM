@@ -3,6 +3,9 @@ from scipy.optimize import minimize
 from scipy.optimize import Bounds
 import matplotlib.pyplot as plt
 
+
+C = 0.1
+
 # Example data (replace with your actual data)
 X = np.array([[1, 2], [0, 1], [-1, 0], [-1, 2], [0, -1], [-1, -2], [-1, 1], [-2, 0]])  # Feature vectors (n_samples x n_features)
 y = np.array([1, 1, 1, 1, -1, -1, -1, -1])  # Labels (+1 or -1)
@@ -21,7 +24,6 @@ def objective(alpha):
     term2 = np.sum(np.abs(alpha))  # L1 norm
     return -(term1 + term2)
 
-C = 0.1
 bounds = Bounds(0, C)
 
 # Initial guess for alpha
@@ -33,10 +35,6 @@ result = minimize(objective, alpha0, method="SLSQP", bounds=bounds)  # SLSQP han
 # Output the solution
 alpha_optimal = result.x
 w = np.sum(alpha_optimal[:, None] * y[:, None] * X, axis=0)
-
-# Output psi^0
-print("w:", w)
-
 support_vector_idx = np.where(alpha_optimal > 1e-5)[0][0]  # Find the first support vector
 b = y[support_vector_idx] - np.dot(w, X[support_vector_idx])
 
@@ -56,6 +54,14 @@ Z = w[0] * xx + w[1] * yy + b
 
 # Plot the decision boundary
 plt.contour(xx, yy, Z, levels=[0], colors='green', linestyles='--')
+
+plt.text(
+    0.05, 0.95, 
+    f"$\mathbf{{w}}$: [{w[0]:.2f}, {w[1]:.2f}]\n$b$: {b:.2f}",
+    transform=plt.gca().transAxes,
+    fontsize=12,
+    bbox=dict(facecolor='white', alpha=0.8, edgecolor='black')
+)
 
 # Labels and legend
 plt.xlabel('Feature 1')
